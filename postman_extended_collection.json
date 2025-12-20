@@ -1,0 +1,960 @@
+{
+  "info": {
+    "name": "Bookstore Backend - MVC (Extended: PDFs, Cover Link, Stock, Profiles)",
+    "description": "Updated collection with new endpoints: coverImageFile/link, pdfFile view/download, stockQty, profile endpoints, seller-owner edit rules. Use {{baseUrl}} and {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.2.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - User",
+      "item": [
+        {
+          "name": "User Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "signup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Prakash\",\n  \"email\": \"prakash@example.com\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"prakash@example.com\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "try {",
+                  "  var json = pm.response.json();",
+                  "  if (json.token) { pm.environment.set('token', json.token); console.log('Saved token to environment'); }",
+                  "  else if (json.accessToken) { pm.environment.set('token', json.accessToken); console.log('Saved accessToken'); }",
+                  "  else if (json.user && json.user.token) { pm.environment.set('token', json.user.token); console.log('Saved nested token'); }",
+                  "  else { console.warn('No token found in response'); }",
+                  "} catch (e) { console.error('Could not parse JSON response', e); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth - Seller",
+      "item": [
+        {
+          "name": "Seller Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ssignup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ssignup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Seller One\",\n  \"email\": \"seller1@example.com\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Seller Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/slogin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "slogin"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"seller1@example.com\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "try {",
+                  "  var json = pm.response.json();",
+                  "  if (json.token) { pm.environment.set('token', json.token); console.log('Saved token to environment'); }",
+                  "  else if (json.accessToken) { pm.environment.set('token', json.accessToken); console.log('Saved accessToken'); }",
+                  "  else if (json.user && json.user.token) { pm.environment.set('token', json.user.token); console.log('Saved nested token'); }",
+                  "  else { console.warn('No token found in response'); }",
+                  "} catch (e) { console.error('Could not parse JSON response', e); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth - Admin",
+      "item": [
+        {
+          "name": "Admin Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asignup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "asignup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/alogin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alogin"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "try {",
+                  "  var json = pm.response.json();",
+                  "  if (json.token) { pm.environment.set('token', json.token); console.log('Saved token to environment'); }",
+                  "  else if (json.accessToken) { pm.environment.set('token', json.accessToken); console.log('Saved accessToken'); }",
+                  "  else if (json.user && json.user.token) { pm.environment.set('token', json.user.token); console.log('Saved nested token'); }",
+                  "  else { console.warn('No token found in response'); }",
+                  "} catch (e) { console.error('Could not parse JSON response', e); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Items (Extended)",
+      "item": [
+        {
+          "name": "Add Item (multipart/form-data)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "items"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "My Book",
+                  "type": "text"
+                },
+                {
+                  "key": "author",
+                  "value": "Author Name",
+                  "type": "text"
+                },
+                {
+                  "key": "genre",
+                  "value": "Fiction",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Nice book",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "stockQty",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "coverImageLink",
+                  "value": "https://example.com/cover.jpg",
+                  "type": "text"
+                },
+                {
+                  "key": "userName",
+                  "value": "Seller One",
+                  "type": "text"
+                },
+                {
+                  "key": "coverImageFile",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ]
+                },
+                {
+                  "key": "pdfFile",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ]
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Item (seller owner or admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/items/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "items",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "My Book - Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "180",
+                  "type": "text"
+                },
+                {
+                  "key": "stockQty",
+                  "value": "8",
+                  "type": "text"
+                },
+                {
+                  "key": "coverImageFile",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ]
+                },
+                {
+                  "key": "pdfFile",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ]
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View PDF inline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item/:id/pdf/view",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item",
+                ":id",
+                "pdf",
+                "view"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item/:id/pdf/download",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item",
+                ":id",
+                "pdf",
+                "download"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Items by Seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getitem/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getitem",
+                ":userId"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Item (auth)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/itemdelete/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "itemdelete",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profiles",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Profile (avatar or imageLink)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Prakash V",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "9999999999",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "prakash@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "imageLink",
+                  "value": "https://example.com/avatar.jpg",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ]
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/profile/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/userorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userorder"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flatno\": \"101\",\n  \"city\": \"Chennai\",\n  \"state\": \"TN\",\n  \"pincode\": \"600001\",\n  \"totalamount\": \"450\",\n  \"seller\": \"Book Store\",\n  \"sellerId\": \"\",\n  \"booktitle\": \"My Book\",\n  \"bookauthor\": \"Author Name\",\n  \"bookgenre\": \"Fiction\",\n  \"itemImage\": \"/uploads/cover.jpg\",\n  \"description\": \"Good order\",\n  \"userId\": \"\",\n  \"userName\": \"Prakash\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getorders/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getorders",
+                ":userId"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getsellerorders/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getsellerorders",
+                ":userId"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order (auth)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/userorderdelete/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userorderdelete",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wishlist",
+      "item": [
+        {
+          "name": "Get All Wishlist Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wishlist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wishlist by User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wishlist",
+                ":userId"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wishlist",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"\",\n  \"title\": \"My Book\",\n  \"itemImage\": \"/uploads/cover.jpg\",\n  \"userId\": \"\",\n  \"userName\": \"Prakash\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove from Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/remove",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wishlist",
+                "remove"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"\",\n  \"userId\": \"\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/userdelete/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userdelete",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Sellers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Seller",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sellerdelete/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sellerdelete",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Items (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ping",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ping",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ping"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
