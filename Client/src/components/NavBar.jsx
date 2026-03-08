@@ -60,7 +60,7 @@ navigate('/')
   return (
     <Navbar bg="primary" variant="" expand="lg" fixed="top" className='bg-primary'>
       <Container>
-        <Navbar.Brand as={Link} to="/" className='fs-2'>OnlineBookStore</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" className='fs-2' style={{color:'red'}}>OnlineBookStore</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-nav" />
         <Navbar.Collapse id="main-nav">
           <Nav className="me-auto">
